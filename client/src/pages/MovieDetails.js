@@ -31,12 +31,17 @@ function MovieDetails() {
     };
 
     return (
-        <Card bg="primary" text="white">
+        <>
             {error && <Alert variant="danger">{error}</Alert>}
             {loading ? (
-                <Loader />
+                <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ height: '100vh' }}
+                >
+                    <Loader />
+                </div>
             ) : (
-                <>
+                <Card bg="primary" text="white">
                     <Card.Header>
                         <h1>{details.title}</h1>
                     </Card.Header>
@@ -52,9 +57,9 @@ function MovieDetails() {
                             {moment(details.updatedAt).format('DD-MMM-YYYY')}
                         </p>
                     </Card.Body>
-                </>
+                </Card>
             )}
-        </Card>
+        </>
     );
 }
 
