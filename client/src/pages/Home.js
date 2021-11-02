@@ -40,7 +40,6 @@ function Home() {
             <SearchBar setSearchText={setSearchText} />
             {error && <p>{error}</p>}
             {loading ? (
-                // change body background color to grey while loading
                 <div
                     className="d-flex justify-content-center align-items-center"
                     style={{ height: '100vh' }}
