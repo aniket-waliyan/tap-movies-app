@@ -49,12 +49,14 @@ const getMovie = async (req, res) => {
 
 const addMovie = async (req, res) => {
     try {
-        const { title, rating, poster } = req.body;
+        const { title, poster, rating, year_of_release, genre } = req.body;
 
         await Movies.create({
             title,
+            poster,
             rating,
-            poster
+            year_of_release,
+            genre
         });
 
         res.status(200).json({
