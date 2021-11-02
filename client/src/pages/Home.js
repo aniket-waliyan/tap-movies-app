@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Card, Button } from 'react-bootstrap';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 import SearchBar from '../Components/SearchBar';
 import Loader from '../Components/Loader';
@@ -10,6 +11,7 @@ function Home() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [searchText, setSearchText] = useState('');
+    const history = useHistory();
 
     const fetchMovies = async () => {
         setLoading(true);
@@ -29,6 +31,10 @@ function Home() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchText]);
 
+    const onClickViewMovie = ({ id }) => {
+        history.push(`/${id}`);
+    };
+
     return (
         <>
             <SearchBar setSearchText={setSearchText} />
@@ -44,18 +50,28 @@ function Home() {
             ) : (
                 <div className="d-flex flex-wrap justify-content-start">
                     {movies.map((movie) => {
-                        const { title, id } = movie;
+                        const { title, id, genre, rating } = movie;
 
                         return (
-                            <Card key={id} className="m-3 movie-card">
+                            <Card
+                                key={id}
+                                className="shadow  m-4 movie-card bg-white rounded"
+                            >
                                 <Card.Body>
                                     <Card.Title>{title}</Card.Title>
+                                    <hr></hr>
                                     <Card.Text>
-                                        Lorem, ipsum dolor sit amet consectetur
-                                        adipisicing elit.
+                                        <p>
+                                            {' '}
+                                            <b>IMDB Rating:</b> {rating}
+                                        </p>
+                                        <b> Genre: </b> {genre}
                                     </Card.Text>
-                                    <Button variant="success">
-                                        View Movie
+                                    <Button
+                                        variant="primary"
+                                        onClick={() => onClickViewMovie(movie)}
+                                    >
+                                        Movie Details
                                     </Button>
                                 </Card.Body>
                             </Card>
