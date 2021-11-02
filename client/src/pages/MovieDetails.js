@@ -1,42 +1,59 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Card } from 'react-bootstrap';
+import { Alert, Card } from 'react-bootstrap';
+import axios from 'axios';
+import moment from 'moment';
+
+import Loader from '../Components/Loader';
 
 function MovieDetails() {
     const { movieId } = useParams();
-    const [movieDetails, setMovieDetails] = useState({});
-
-    const fetchMovieDetails = async (movieId) => {
-        const response = await axios.get(
-            `http://localhost:4000/api/movies/${movieId}`
-        );
-
-        setMovieDetails(response.data);
-        console.log(response.data);
-    };
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [details, setDetails] = useState({});
 
     useEffect(() => {
-        fetchMovieDetails(movieId);
+        fetchMovieDetails();
     }, []);
 
+    const fetchMovieDetails = async () => {
+        try {
+            setLoading(true);
+            const response = await axios({
+                method: 'get',
+                url: `http://localhost:4000/api/movies/${movieId}`
+            });
+            setLoading(false);
+            setDetails(response.data.movie);
+        } catch (e) {
+            setError(e.message);
+        }
+    };
+
     return (
-        <Card className="bg-dark text-white">
-            <Card.Img
-                src="https://via.placeholder.com/720"
-                height="720"
-                width="400px"
-                alt="Card image"
-            />
-            <Card.ImgOverlay>
-                <Card.Title>Card title</Card.Title>
-                <Card.Text>
-                    This is a wider card with supporting text below as a natural
-                    lead-in to additional content. This content is a little bit
-                    longer.
-                </Card.Text>
-                <Card.Text>Last updated 3 mins ago</Card.Text>
-            </Card.ImgOverlay>
+        <Card bg="primary" text="white">
+            {error && <Alert variant="danger">{error}</Alert>}
+            {loading ? (
+                <Loader />
+            ) : (
+                <>
+                    <Card.Header>
+                        <h1>{details.title}</h1>
+                    </Card.Header>
+                    <Card.Body>
+                        <Card.Img variant="top" src={details.poster} />
+                        <p>Rating: {details.rating}</p>
+                        <p>
+                            Created At:{' '}
+                            {moment(details.createdAt).format('DD-MMM-YYYY')}
+                        </p>
+                        <p>
+                            Updated At:{' '}
+                            {moment(details.updatedAt).format('DD-MMM-YYYY')}
+                        </p>
+                    </Card.Body>
+                </>
+            )}
         </Card>
     );
 }
